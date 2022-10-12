@@ -1,0 +1,30 @@
+wipe
+model BasicBuilder -ndm 2 -ndf 3
+uniaxialMaterial Concrete01 1 -14170.0 -0.002 -14170.0 -0.0035
+uniaxialMaterial Steel01 2 391300.0 200000000.0 0.0
+uniaxialMaterial Steel01 3 391300.0 200000000.0 0.0
+section Fiber 1 -GJ 10000 {;
+patch quad 1 20 50 -0.15 -0.3 0.15 -0.3 0.15 0.3 -0.15 0.3;
+layer straight 2 4 0.000113097335529 -0.12 -0.27 0.12 -0.27;
+layer straight 3 4 0.000113097335529 0.12 0.27 -0.12 0.27;
+}
+node 1 0.0 -9.63735264432e-18
+node 2 0.0 -9.63735264432e-18
+fix 1 1 1 1
+fix 2 0 1 1
+element zeroLengthSection 1 1 2 1
+pattern Plain 1 "Linear" {;
+load 2 -0.1 0.0 0.0;
+}
+recorder Element -file NEpsSectionNegativeForce.out -ele 1 section force
+recorder Element -file NEpsSectionNegativeDisp.out -ele 1 section deformation
+integrator LoadControl 10 100
+system BandGeneral
+test NormUnbalance 1e-09 1000
+numberer RCM
+constraints Plain
+algorithm Newton
+analysis Static
+analyze 5000
+
+wipe
